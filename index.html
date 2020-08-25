@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Bot</title>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
+  <link href="https://fonts.googleapis.com/css2?family=Titillium+Web&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="chat-container">
+      <div id="Chatbotwin" class="chatbot-win">
+        <!--Chat Header-->
+        <div class="chat-header">
+          <div class="chat-profile"><img src="chat_head.jpeg" alt="chat-bot" /></div>
+          <h2>Chat Bot</h2>
+          <p>Agent</p>
+        </div>
+        <!--Chat Screen-->
+          <div class="chat-output" id="chat-output">
+            <div class="bot-message">
+              <div class="message">
+                Hey There !
+              </div>
+            </div>
+          </div>
+          <!--Chat Input-->
+          <div class="chat-input">
+            <form action="#0" id="user-input-form">
+              <input type="text" class="user-input" id="user-input" placeholder="Ask me.." autocomplete="off" />
+            </form>
+            <span class="send-message" id="send-message">
+              <?xml version="1.0" encoding="iso-8859-1"?>
+              <!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+              <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px" y="0px" viewBox="0 0 448 448" style="enable-background:new 0 0 448 448;" xml:space="preserve">
+                <g>
+                  <g>
+                    <polygon points="0.213,32 0,181.333 320,224 0,266.667 0.213,416 448,224         " />
+                  </g>
+                </g>
+                <g>
+                </g>
+                <g>
+                </g>
+                <g>
+                </g>
+                <g>
+                </g>
+                <g>
+                </g>
+                <g>
+                </g>
+                <g>
+                </g>
+                <g>
+                </g>
+                <g>
+                </g>
+                <g>
+                </g>
+                <g>
+                </g>
+                <g>
+                </g>
+                <g>
+                </g>
+                <g>
+                </g>
+                <g>
+                </g>
+              </svg>
+            </span>
+          </div>
+        </div>
+        <a class="chat-trigger" id="chat-trigger"><i class="prime far fa-comment-alt"></i></a>
+      </div>
+    </div>
+    <!-- Scripts -->
+    <script type="text/javascript">
+      var outputArea = $("#chat-output");
+
+
+
+      function ChatLogics() {
+        var message = $("#user-input").val();
+
+        if (!$("#user-input").val() == "") {
+          outputArea.append(`
+         <div class='user-message'>
+           <div class='message'>
+             ${message}
+           </div>
+         </div>
+         `);
+          var replyFromBot,
+            replyFromBotanim
+          $.ajax({
+            url: "https://jsonplaceholder.typicode.com/photos",
+            type: 'GET',
+            dataType: 'json',
+            beforeSend: function () {
+              setTimeout(function () {
+                replyFromBot = `<img src="frombot.gif" width="80" class="typo-anime"/>`
+                outputArea.append(replyFromBot)
+              }, 100)
+
+            },
+            success: function (res) {
+              $("#chat-output").stop().animate({ scrollTop: $("#chat-output")[0].scrollHeight }, 1000);
+              
+              setTimeout(function () {
+                function urlify(itemVal) {
+                  var urlRegex = /(https?:\/\/[^\s]+)/g;
+                  return res[0].url.replace(urlRegex, function (url) {
+                    return '<a href="' + url + '">' + url + '</a>';
+                  })
+                }
+                var tex = res[0].url
+                var tt = urlify(tex)
+                replyFromBot = ` 
+                <div class="bot-message">
+                  <div class="message">
+                  ${res[0].title} is ${tt}
+                  </div>
+               </div>`
+                $('.typo-anime').remove()
+                outputArea.append(replyFromBot)
+              }, 300)
+
+
+
+            }, error: function () {
+              $('.typo-anime').remove()
+              replyFromBot = ` 
+              <div class="bot-message">
+                <div class="message">
+                Sorry there was an error sending your messages please try again
+                </div>
+              </div>`
+
+              outputArea.append(replyFromBot)
+
+            }
+          });
+        } else {
+          outputArea.append('')
+        }
+        $('#user-input-form')[0].reset();
+      }
+
+
+      $("#user-input-form").on("submit", function (e) {
+        e.preventDefault();
+        ChatLogics()
+
+      })
+      $("#send-message").on("click", function (e) {
+        ChatLogics()
+      });
+
+      $('.chat-trigger').click(function () {
+        $('#Chatbotwin').slideToggle()
+        $(this).find('i').toggleClass('fas fa-times')
+        $('.prime').toggleClass('is-active');
+      });
+
+    </script>
+</body>
+
+</html>
